@@ -5,10 +5,16 @@ using System.Web;
 
 namespace WP.Service.Models
 {
-    public enum Prediction
+    public enum PredictionTypes
     {
         PROBABLE,
         PERHAPS,
         UNLIKELY
+    }
+
+    public class Prediction
+    {
+        public int PredictionId { get; set; }
+        public PredictionTypes Type { get; set; }
     }
 }

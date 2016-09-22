@@ -12,16 +12,17 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 DROP TABLE [dbo].[alternative];
-DROP TABLE [dbo].[milestone];
 DROP TABLE [dbo].[probability];
+DROP TABLE [dbo].[milestone];
 DROP TABLE [dbo].[guest];
 DROP TABLE [dbo].[usr];
+DROP TABLE [dbo].[prediction];
 
-CREATE TABLE [dbo].[usr] (
-    [Id]       INT           NOT NULL,
-    [Username] NVARCHAR (50) NULL,
-    [Email]    NVARCHAR (50) NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC)
+
+
+CREATE TABLE [dbo].[prediction] (
+    [Label] NCHAR (10) NOT NULL,
+    PRIMARY KEY CLUSTERED ([Label] ASC)
 );
 
 CREATE TABLE [dbo].[guest] (
@@ -33,27 +34,33 @@ CREATE TABLE [dbo].[guest] (
     [Chance]      NCHAR (10)    NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_CompaniedBy] FOREIGN KEY ([CompaniedBy]) REFERENCES [dbo].[guest] ([Id]),
-    CONSTRAINT [FK_Probabilty] FOREIGN KEY ([Chance]) REFERENCES [dbo].[probability] ([Label])
+    CONSTRAINT [FK_Probabilty] FOREIGN KEY ([Chance]) REFERENCES [dbo].[prediction] ([Label])
 );
 
-CREATE TABLE [dbo].[probability] (
-    [Label] NCHAR (10) NOT NULL,
-    PRIMARY KEY CLUSTERED ([Label] ASC)
-);
-
-CREATE TABLE [dbo].[milestone] (
+CREATE TABLE [dbo].[alternative] (
     [Id]       INT           NOT NULL,
     [Label]    NVARCHAR (50) NOT NULL,
     [Contact]  NVARCHAR (50) NOT NULL,
     [Location] NVARCHAR (50) NULL,
-    [Cost]     NVARCHAR (50) NOT NULL,
+    [Cost]     INT           NOT NULL,
     [Date]     DATETIME      NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC)
 );
 
-CREATE TABLE [dbo].[alternative] (
+CREATE TABLE [dbo].[milestone] (
     [Id]          INT NOT NULL,
-    [MilestoneFk] INT NOT NULL,
+    [Choice] INT NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_milestone] FOREIGN KEY ([MilestoneFk]) REFERENCES [dbo].[milestone] ([Id])
+    CONSTRAINT [FK_Alternative] FOREIGN KEY ([Choice]) REFERENCES [dbo].[alternative] ([Id])
 );
+
+CREATE TABLE [dbo].[usr] (
+    [Id]       INT           NOT NULL,
+    [Username] NVARCHAR (50) NULL,
+    [Email]    NVARCHAR (50) NULL,
+    [Task]     INT NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [FK_Task] FOREIGN KEY ([Task]) REFERENCES [dbo].[milestone] ([Id])
+);
+
+
